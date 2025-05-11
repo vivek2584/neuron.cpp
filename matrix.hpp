@@ -17,10 +17,19 @@ struct Matrix{
         }
     };
 
-    Matrix<rows, cols>& scale(double value){           // return type is not void to enable chaining
+    Matrix<rows, cols>& scale_by_value(double value){           // return type is not void to enable chaining
         for(size_t i = 0; i < rows ; i++){
             for(size_t j = 0 ; j < cols; j++){
                 m_matrix[i][j] = m_matrix[i][j] * value;
+            }
+        }
+        return *this;
+    }
+
+    Matrix<rows, cols>& add_value(double value){
+        for(size_t i = 0; i < rows ; i++){
+            for(size_t j = 0 ; j < cols; j++){
+                m_matrix[i][j] = m_matrix[i][j] + value;
             }
         }
         return *this;
@@ -66,6 +75,19 @@ Matrix<r, c> operator-(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2)
     for(size_t i = 0; i < r; i++){
         for(size_t j = 0; j < c ; j++){
             result_matrix.m_matrix[i][j] = matrix1.m_matrix[i][j] - matrix2.m_matrix[i][j];
+        }
+    }
+
+    return result_matrix;
+}
+
+template<size_t r, size_t c>
+Matrix<r, c> operator%(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2){   // element by element multiplicaton
+    Matrix<r, c> result_matrix;
+    
+    for(size_t i = 0; i < r; i++){
+        for(size_t j = 0; j < c ; j++){
+            result_matrix.m_matrix[i][j] = matrix1.m_matrix[i][j] * matrix2.m_matrix[i][j];
         }
     }
 
