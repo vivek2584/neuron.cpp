@@ -34,6 +34,26 @@ struct Matrix{
         }
         return *this;
     }
+
+    Matrix<cols, rows> transpose(){
+        Matrix<cols, rows> transposed;
+        for(size_t i = 0; i < rows ; i++){
+            for(size_t j = 0 ; j < cols; j++){
+                transposed.m_matrix[j][i] = m_matrix[i][j];
+            }
+        }
+        return transposed;
+    }
+
+    Matrix<rows, cols> apply_sigmoid(){
+        Matrix<rows, cols> result_matrix;
+        for(size_t i = 0; i < rows ; i++){
+            for(size_t j = 0; j < cols; j++){
+                result_matrix.m_matrix[i][j] =  (1.0 / (1.0 + std::exp(-1 * m_matrix[i][j])));
+            }
+        }
+        return result_matrix;
+    }
 };
 
 //helper fns
@@ -92,6 +112,13 @@ Matrix<r, c> operator%(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2)
     }
 
     return result_matrix;
+}
+
+template<size_t rows, size_t cols>
+Matrix<rows, cols> apply_sigmoid_prime(const Matrix<rows, cols>& m){
+    Matrix<rows, cols> unit_matrix;
+    for(auto& row : unit_matrix.m_matrix) row.fill(1.0);
+    return m % (unit_matrix - m);
 }
 
 #endif
