@@ -10,7 +10,7 @@ a 3-layer feed forward neural network using the MNIST dataset to test the implem
 
 ## Sample Output
 
-![Sample Output](images/sample_output.png)
+![Sample Output](output.jpeg)
 
 ## How to build
 ```bash
