@@ -11,13 +11,13 @@ struct Matrix{
     //size_t m_rows;
     //size_t m_cols;
 
-    Matrix(){
+    constexpr Matrix(){
         for(auto& row : m_matrix){
             row.fill(0.0);
         }
     };
 
-    Matrix<rows, cols>& scale_by_value(double value){           // return type is not void to enable chaining
+    constexpr Matrix<rows, cols>& scale_by_value(double value){           // return type is not void to enable chaining
         for(size_t i = 0; i < rows ; i++){
             for(size_t j = 0 ; j < cols; j++){
                 m_matrix[i][j] = m_matrix[i][j] * value;
@@ -26,7 +26,7 @@ struct Matrix{
         return *this;
     }
 
-    Matrix<rows, cols>& add_value(double value){
+    constexpr Matrix<rows, cols>& add_value(double value){
         for(size_t i = 0; i < rows ; i++){
             for(size_t j = 0 ; j < cols; j++){
                 m_matrix[i][j] = m_matrix[i][j] + value;
@@ -35,7 +35,7 @@ struct Matrix{
         return *this;
     }
 
-    Matrix<cols, rows> transpose(){
+    constexpr Matrix<cols, rows> transpose(){
         Matrix<cols, rows> transposed;
         for(size_t i = 0; i < rows ; i++){
             for(size_t j = 0 ; j < cols; j++){
@@ -45,7 +45,7 @@ struct Matrix{
         return transposed;
     }
 
-    Matrix<rows, cols> apply_sigmoid(){
+    constexpr Matrix<rows, cols> apply_sigmoid(){
         Matrix<rows, cols> result_matrix;
         for(size_t i = 0; i < rows ; i++){
             for(size_t j = 0; j < cols; j++){
@@ -54,12 +54,18 @@ struct Matrix{
         }
         return result_matrix;
     }
+
+    constexpr Matrix<rows, cols> apply_sigmoid_prime(){
+        Matrix<rows, cols> unit_matrix;
+        for(auto& row : unit_matrix.m_matrix) row.fill(1.0);
+        return *this % (unit_matrix - *this);
+    }
 };
 
 //helper fns
 
 template<size_t r1, size_t c1, size_t c2>
-Matrix<r1, c2> operator*(const Matrix<r1, c1>& matrix1, const Matrix<c1, c2>& matrix2){
+constexpr Matrix<r1, c2> operator*(const Matrix<r1, c1>& matrix1, const Matrix<c1, c2>& matrix2){
     Matrix<r1, c2> result_matrix;
     
     for(size_t i = 0; i < r1; i++){
@@ -76,7 +82,7 @@ Matrix<r1, c2> operator*(const Matrix<r1, c1>& matrix1, const Matrix<c1, c2>& ma
 }
 
 template<size_t r, size_t c>
-Matrix<r, c> operator+(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2){
+constexpr Matrix<r, c> operator+(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2){
     Matrix<r, c> result_matrix;
     
     for(size_t i = 0; i < r; i++){
@@ -89,7 +95,7 @@ Matrix<r, c> operator+(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2)
 }
 
 template<size_t r, size_t c>
-Matrix<r, c> operator-(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2){
+constexpr Matrix<r, c> operator-(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2){
     Matrix<r, c> result_matrix;
     
     for(size_t i = 0; i < r; i++){
@@ -102,7 +108,7 @@ Matrix<r, c> operator-(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2)
 }
 
 template<size_t r, size_t c>
-Matrix<r, c> operator%(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2){   // element by element multiplicaton
+constexpr Matrix<r, c> operator%(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2){   // element by element multiplicaton
     Matrix<r, c> result_matrix;
     
     for(size_t i = 0; i < r; i++){
@@ -112,13 +118,6 @@ Matrix<r, c> operator%(const Matrix<r, c>& matrix1, const Matrix<r, c>& matrix2)
     }
 
     return result_matrix;
-}
-
-template<size_t rows, size_t cols>
-Matrix<rows, cols> apply_sigmoid_prime(const Matrix<rows, cols>& m){
-    Matrix<rows, cols> unit_matrix;
-    for(auto& row : unit_matrix.m_matrix) row.fill(1.0);
-    return m % (unit_matrix - m);
 }
 
 #endif

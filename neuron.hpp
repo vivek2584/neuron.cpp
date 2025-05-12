@@ -66,10 +66,10 @@ struct Network{
         Matrix<outputs, 1> output_errors = target_matrix - final_outputs;              //error calculation
         Matrix<hiddens, 1> hidden_errors = output_weights.transpose() * output_errors;
 
-        output_weights = output_weights +   ((output_errors % apply_sigmoid_prime(final_outputs))
-                                            * hidden_outputs.transpose()).scale(learning_rate);           // backpropogate
-        hidden_weights = hidden_weights +   ((hidden_errors % apply_sigmoid_prime(hidden_outputs))         
-                                            * input_matrix.transpose()).scale(learning_rate);
+        output_weights = output_weights +   ((output_errors % final_outputs.apply_sigmoid_prime())
+                                            * hidden_outputs.transpose()).scale_by_value(learning_rate);           // backpropogate
+        hidden_weights = hidden_weights +   ((hidden_errors % hidden_outputs.apply_sigmoid_prime())         
+                                            * input_matrix.transpose()).scale_by_value(learning_rate);
     }
 };
 
